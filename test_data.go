@@ -21,16 +21,10 @@ func main() {
     log.Fatalf("unable to create parser: %s", err)
   }
 
-  // Register a callback for combat log entry event
-  //p.Callbacks.OnCMsgDOTACombatLogEntry(func(m *dota.CMsgDOTACombatLogEntry) error { 
-        //log.Printf("log: %s\n", m) 
-        //return nil 
-  //})
-
-  // Register callback for chat message entry event
-  p.Callbacks.OnCDOTAUserMsg_ChatMessage(func(m *dota.CDOTAUserMsg_ChatMessage) error {
-      log.Printf("%s\n", m)
-      return nil
+  // Register callback for combat log entry event
+  p.Callbacks.OnCMsgDOTACombatLogEntry(func (m* dota.CMsgDOTACombatLogEntry) error {
+    log.Printf("%s\n", m)
+    return nil
   })
 
   // Start parsing the replay!
