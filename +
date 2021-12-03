@@ -1,0 +1,44 @@
+package main
+
+import(
+  "log"
+  "os"
+  "strings"
+
+  "github.com/dotabuff/manta"
+  //"github.com/dotabuff/manta/dota"
+)
+
+func main() {
+  // Open replay file
+  f, err := os.Open("./replays/6299946143.dem")
+  if err != nil {
+    log.Fatalf("unable to open file: %s", err)
+  }
+  defer f.Close()
+
+  // Create parser from replay file
+  p, err := manta.NewStreamParser(f)
+  if err != nil {
+    log.Fatalf("unable to create parser: %s", err)
+  }
+
+	p.OnPacketEntity(func(pe *manta.PacketEntity, eventType manta.EntityEventType) error {
+			switch eventType {
+
+			case manta.EntityEventType_Update:
+					entityNamesTable, _ := p.StringTables.GetTableByName("EntityNames")
+
+					if strings.Contains(pe.ClassName, "CDOTA_Unit_Hero") {
+							entityNameIndex, _ := pe.Fetch("CEntityIdentity.m_nameStringableIndex")
+							entityName := entityNamesTable.Items[entityNameIndex.(int32)].Key
+							maxMana, _ := pe.FetchFloat32("m_flMaxMana");
+
+							if maxMana > 0 {
+									fmt.Println(parser.Tick, entityName, maxMana)
+							}
+					}
+			}
+			return nil
+	})
+}
