@@ -5,16 +5,17 @@ import(
   "os"
   "strings"
   "strconv"
-  "time"
+  "encoding/csv"
+  "fmt"
 
   "github.com/dotabuff/manta"
   //"github.com/dotabuff/manta/dota"
 )
 
-var preGameStartTime time.Duration
-var gameTime time.Duration
-var gameStartTime time.Duration
-var gameEndTime time.Duration
+var preGameStartTime float32 
+var gameTime float32
+var gameStartTime float32
+var gameEndTime float32 
 
 var heroID [10]int32 
 
@@ -32,20 +33,34 @@ func main() {
     log.Fatalf("unable to create parser: %s", err)
   }
 
+  w, err := os.Create("./output.csv")
+  if err != nil {
+    log.Fatal("cannot create output file: %s", err)
+  }
+  defer w.Close()
+
+  writer := csv.NewWriter(w)
+  defer writer.Flush()
+
+  outputHeaders := []string{
+    "preGameStartTime", 
+    "gameTime", 
+    "heroID", 
+    "cellX", 
+    "cellY", 
+    "vecX",
+    "vecY",
+    "playerID",
+  }
+  writer.Write(outputHeaders)
+
   p.OnEntity(func(e *manta.Entity, o manta.EntityOp) error {
    
     if e.GetClassName() == "CDOTAGamerulesProxy" {
-      pt, _ := e.GetFloat32("m_pGameRules.m_flPreGameStartTime")
-      preGameStartTime = time.Duration(pt) * time.Second
-
-      t, _ := e.GetFloat32("m_pGameRules.m_fGameTime")
-      gameTime = time.Duration(t) * time.Second
-      
-      ts, _ := e.GetFloat32("m_pGameRules.m_flGameStartTime")
-      gameStartTime = time.Duration(ts) * time.Second
-
-      te, _ := e.GetFloat32("m_pGameRules.m_flGameEndTime")
-      gameEndTime = time.Duration(te) * time.Second
+      preGameStartTime, _ = e.GetFloat32("m_pGameRules.m_flPreGameStartTime")
+      gameTime, _ = e.GetFloat32("m_pGameRules.m_fGameTime")
+      gameStartTime, _ = e.GetFloat32("m_pGameRules.m_flGameStartTime")
+      gameEndTime, _ = e.GetFloat32("m_pGameRules.m_flGameEndTime")
     }
 
     if e.GetClassName() == "CDOTA_PlayerResource" {
@@ -55,15 +70,29 @@ func main() {
     }
 
     if strings.HasPrefix(e.GetClassName(), "CDOTA_Unit_Hero") {
-      x, _ := e.GetFloat32("CBodyComponent.m_vecX")
-      y, _ := e.GetFloat32("CBodyComponent.m_vecY")
+      cellX, _ := e.GetUint64("CBodyComponent.m_cellX")
+      cellY, _ := e.GetUint64("CBodyComponent.m_cellY")
+      vecX, _ := e.GetFloat32("CBodyComponent.m_vecX")
+      vecY, _ := e.GetFloat32("CBodyComponent.m_vecY")
       owner, _ := e.GetInt32("m_iPlayerID")
-      log.Printf("time: %v hero: %v x: %v y: %v owner: %v", gameTime, heroID[owner], x, y, owner)
-    }
 
+      output := []string{
+        fmt.Sprintf("%.4f", preGameStartTime), 
+        fmt.Sprintf("%.4f", gameTime),
+        strconv.Itoa(int(heroID[owner])), 
+        strconv.Itoa(int(cellX)),
+        strconv.Itoa(int(cellY)),
+        fmt.Sprintf("%.4f", vecX), 
+        fmt.Sprintf("%.4f", vecY), 
+        strconv.Itoa(int(owner)),
+      }
+      writer.Write(output)
+      
+    }
     return nil
   })
 
   p.Start()
   log.Printf("Parse complete!")
+  f.Close()
 }
