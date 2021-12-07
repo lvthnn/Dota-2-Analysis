@@ -5,10 +5,9 @@ library(ggplot2, dplyr, plotly)
 f <- file.path("~/Github/Dota2_DataMining/output.csv")
 df <- read.csv(f)
 
-# To see the total movement path of
-# heroes, we use ggplot visualization:
-df %>%
-  ggplot(aes(x = cellX, y = cellY)) + 
-  geom_path() +
-  theme_minimal()
-  facet_wrap(~ heroID)
+# Notice: Team 2 = Radiant
+#         Team 3 = Dire
+
+# Victory codes: 2 = Radiant
+#                3 = Dire
+#                5 = Undecided
