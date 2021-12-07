@@ -51,6 +51,8 @@ func main() {
     "vecX",
     "vecY",
     "playerID",
+    "team",
+    "netWorth",
   }
   writer.Write(outputHeaders)
 
@@ -75,6 +77,8 @@ func main() {
       vecX, _ := e.GetFloat32("CBodyComponent.m_vecX")
       vecY, _ := e.GetFloat32("CBodyComponent.m_vecY")
       owner, _ := e.GetInt32("m_iPlayerID")
+      team, _ := e.GetUint64("m_iTeamNum")
+      netw, _ := e.GetInt32("m_iNetWorth")
 
       output := []string{
         fmt.Sprintf("%.4f", preGameStartTime), 
@@ -85,9 +89,10 @@ func main() {
         fmt.Sprintf("%.4f", vecX), 
         fmt.Sprintf("%.4f", vecY), 
         strconv.Itoa(int(owner)),
+        strconv.Itoa(int(team)),
+        strconv.Itoa(int(netw)),
       }
       writer.Write(output)
-      
     }
     return nil
   })
