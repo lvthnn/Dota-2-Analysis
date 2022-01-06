@@ -7,10 +7,17 @@ import(
   "strconv"
   "encoding/csv"
   "fmt"
+  "path/filepath"
 
   "github.com/dotabuff/manta"
   //"github.com/dotabuff/manta/dota"
 )
+
+// OTHER VARIABLES
+var filePaths []string
+var fileNames []string
+
+// PARSER VARIABLES 
 
 var preGameStartTime float32 
 var gameTime float32
@@ -24,9 +31,31 @@ var heroID [10]int32
 var netWorth [10]int32
 var totalXP [10]int32
 
+
 func main() {
+  err := filepath.Walk("./replays/", func(path string, info os.FileInfo, err error) error {
+    if err != nil {
+      log.Fatalf("%s", err)
+      return err
+    }
+    
+    if !info.IsDir() { filePaths = append(filePaths, path); fileNames = append(fileNames, info.Name()) }
+    return nil
+  })
+
+  if err != nil {
+    log.Fatalf("%s", err)
+  }
+
+  for i := 0; i < len(fileNames); i++ {
+    Parse(filePaths[i], fileNames[i])
+  }
+}
+
+
+func Parse(path string, name string) {
   // Open replay file
-  f, err := os.Open("./replays/6300048284.dem")
+  f, err := os.Open(path)
   if err != nil {
     log.Fatalf("unable to open file: %s", err)
   }
@@ -38,7 +67,7 @@ func main() {
     log.Fatalf("unable to create parser: %s", err)
   }
 
-  w, err := os.Create("./output.csv")
+  w, err := os.Create("./data/output_" + name + ".csv")
   if err != nil {
     log.Fatal("cannot create output file: %s", err)
   }
@@ -50,6 +79,7 @@ func main() {
   outputHeaders := []string{
     "preGameStartTime", 
     "gameTime", 
+    "gameEndTime",
     "heroID", 
     "cellX", 
     "cellY", 
@@ -106,6 +136,7 @@ func main() {
       output := []string{
         fmt.Sprintf("%.4f", preGameStartTime), 
         fmt.Sprintf("%.4f", gameTime),
+        fmt.Sprintf("%.4f", gameEndTime),
         strconv.Itoa(int(heroID[owner])), 
         strconv.Itoa(int(cellX)),
         strconv.Itoa(int(cellY)),
@@ -124,6 +155,6 @@ func main() {
   })
 
   p.Start()
-  log.Printf("Parse complete!")
+  log.Printf("Parse for file %s complete!", path)
   f.Close()
 }
