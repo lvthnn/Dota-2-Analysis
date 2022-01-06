@@ -91,8 +91,6 @@ func main() {
         xp, _ := e.GetInt32("m_vecDataTeam.000" + strconv.Itoa(i) + ".m_iTotalEarnedXP")
         netWorth[numPlayer] = nw
         totalXP[numPlayer] = xp
-
-        //log.Printf("playerID: %v \t netWorth: %v \t totalXP: %v", numPlayer, netWorth[numPlayer], totalXP[numPlayer])
       }
     }
 
