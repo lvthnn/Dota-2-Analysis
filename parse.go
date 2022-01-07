@@ -157,4 +157,5 @@ func Parse(path string, name string) {
   p.Start()
   log.Printf("Parse for file %s complete!", name)
   f.Close()
+
 }
