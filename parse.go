@@ -67,9 +67,9 @@ func Parse(path string, name string) {
     log.Fatalf("unable to create parser: %s", err)
   }
 
-  w, err := os.Create("./data/output_" + name + ".csv")
+  w, err := os.Create("./data/output_" + strings.ReplaceAll(name, ".dem", "") + ".csv")
   if err != nil {
-    log.Fatal("cannot create output file: %s", err)
+    log.Fatalf("cannot create output file: %s", err)
   }
   defer w.Close()
 
@@ -155,6 +155,6 @@ func Parse(path string, name string) {
   })
 
   p.Start()
-  log.Printf("Parse for file %s complete!", path)
+  log.Printf("Parse for file %s complete!", name)
   f.Close()
 }
