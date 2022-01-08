@@ -4,4 +4,8 @@ To start, clone the Github repository into the directory of your choice:
 
 ```git clone https://github.com/lvthnn/Dota2_DataMining```
 
-The 
+You will also have to install the Go modules from Dotabuff for the `parse.go` script to work:
+
+```
+go get github.com/dotabuff/manta
+```
