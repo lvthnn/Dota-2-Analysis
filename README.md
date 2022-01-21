@@ -1,6 +1,6 @@
 # Dota 2 Data Parser
 Uses Dotabuff's [Manta parser](https://github.com/dotabuff/manta) to extract match data from game replays.
-Mainly useful for spatiotemporal analysis of data. Recommend using OpenDota API for statistical analysis of
+Mainly useful for spatiotemporal analysis of data. Recommend using [OpenDota API](https://docs.opendota.com/#) for statistical analysis of
 non-spatiotemporal factors (e.g. hero drafts).
 To start, clone the Github repository into the directory of your choice:
 
