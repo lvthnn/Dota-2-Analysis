@@ -12,3 +12,5 @@ and `npc_units.txt` pulled from the [Dota 2 Gametracking](https://github.com/Ste
 To fetch the tables, run the command:
 
 ```go run gettables.go```
+
+## Pulling replays from OpenDOTA into `replays/`
