@@ -32,7 +32,7 @@ var netWorth [10]int32
 var totalXP [10]int32
 
 func main() {
-	err := filepath.Walk("./replays/", func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk("../replays/", func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			log.Fatalf("%s", err)
 			return err
@@ -68,7 +68,7 @@ func Parse(path string, name string) {
 		log.Fatalf("unable to create parser: %s", err)
 	}
 
-	w, err := os.Create("./data/output_" + strings.ReplaceAll(name, ".dem", "") + ".csv")
+	w, err := os.Create("../data/output_" + strings.ReplaceAll(name, ".dem", "") + ".csv")
 	if err != nil {
 		log.Fatalf("cannot create output file: %s", err)
 	}
