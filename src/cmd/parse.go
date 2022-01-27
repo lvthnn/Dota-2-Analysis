@@ -1,4 +1,4 @@
-package cmd
+package main
 
 import (
 	"encoding/csv"
@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/dotabuff/manta"
-	//"github.com/dotabuff/manta/dota"
+  "github.com/dotabuff/manta"
+  "github.com/ermanimer/progress_bar"
 )
 
 // OTHER VARIABLES
@@ -31,10 +31,12 @@ var heroID [10]int32
 var netWorth [10]int32
 var totalXP [10]int32
 
-func parseDir() {
-  log.Printf("Starting replay parse...")
+func main() {
+  fmt.Printf("Starting replay parse...")
 
-	err := filepath.Walk("../replays/", func(path string, info os.FileInfo, err error) error {
+  // Loop through replays directory and append all matching files
+  // to filePaths and fileNames arrays
+	err := filepath.Walk("../../replays/", func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			log.Fatalf("%s", err)
 			return err
@@ -51,8 +53,24 @@ func parseDir() {
 		log.Fatalf("%s", err)
 	}
 
+  // Instantiate progress bar
+  output := os.Stdout
+  schema := "({bar}) ({current} of {total} completed)"
+	filledCharacter := "▆"
+	blankCharacter := " "
+  
+  numReplays := len(fileNames)
+	var length float64 = float64(numReplays)
+	var totalValue float64 = float64(numReplays) 
+
+  pb := progress_bar.NewProgressBar(output, schema, filledCharacter, blankCharacter, length, totalValue)
+  pb.Start()
+
+  // Parse all replays found during scan. Update progress bar for each
+  // replay parse completed by the script
 	for i := 0; i < len(fileNames); i++ {
 		parse(filePaths[i], fileNames[i])
+    pb.Update(float64(i + 1))
 	}
 }
 
@@ -70,7 +88,7 @@ func parse(path string, name string) {
 		log.Fatalf("unable to create parser: %s", err)
 	}
 
-	w, err := os.Create("../data/output_" + strings.ReplaceAll(name, ".dem", "") + ".csv")
+	w, err := os.Create("../../data/output_" + strings.ReplaceAll(name, ".dem", "") + ".csv")
 	if err != nil {
 		log.Fatalf("cannot create output file: %s", err)
 	}
@@ -159,7 +177,6 @@ func parse(path string, name string) {
 	})
 
 	p.Start()
-	log.Printf("Parse for file %s complete!", name)
 	f.Close()
 
 }
