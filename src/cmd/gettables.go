@@ -1,4 +1,4 @@
-package main 
+package cmd 
 
 import(
   "log"
@@ -8,7 +8,7 @@ import(
   "errors"
 )
 
-func main() {
+func getTables() {
   // reqFiles array stores fileName and URL
   reqFiles := [3][2]string{
     {"tables/npc_heroes.txt", "https://github.com/SteamDatabase/GameTracking-Dota2/raw/master/game/dota/scripts/npc/npc_heroes.txt"},

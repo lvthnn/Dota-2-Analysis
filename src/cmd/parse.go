@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"encoding/csv"
@@ -31,7 +31,9 @@ var heroID [10]int32
 var netWorth [10]int32
 var totalXP [10]int32
 
-func main() {
+func parseDir() {
+  log.Printf("Starting replay parse...")
+
 	err := filepath.Walk("../replays/", func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			log.Fatalf("%s", err)
@@ -50,11 +52,11 @@ func main() {
 	}
 
 	for i := 0; i < len(fileNames); i++ {
-		Parse(filePaths[i], fileNames[i])
+		parse(filePaths[i], fileNames[i])
 	}
 }
 
-func Parse(path string, name string) {
+func parse(path string, name string) {
 	// Open replay file
 	f, err := os.Open(path)
 	if err != nil {
