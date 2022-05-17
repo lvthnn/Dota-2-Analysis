@@ -1,4 +1,4 @@
-package main
+package main 
 
 import (
 	"encoding/csv"
@@ -36,7 +36,7 @@ func main() {
 
   // Loop through replays directory and append all matching files
   // to filePaths and fileNames arrays
-	err := filepath.Walk("../../replays/", func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk("./replays/", func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			log.Fatalf("%s", err)
 			return err
@@ -88,7 +88,7 @@ func parse(path string, name string) {
 		log.Fatalf("unable to create parser: %s", err)
 	}
 
-	w, err := os.Create("../../data/output_" + strings.ReplaceAll(name, ".dem", "") + ".csv")
+	w, err := os.Create("./data/output_" + strings.ReplaceAll(name, ".dem", "") + ".csv")
 	if err != nil {
 		log.Fatalf("cannot create output file: %s", err)
 	}
